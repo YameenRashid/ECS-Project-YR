@@ -1,0 +1,54 @@
+name: Terraform Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'infra/**'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-west-2
+  ECR_REPOSITORY: threatmod
+
+jobs:
+  terraform-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: ./infra
+    
+    steps:
+      - name:  Checkout Code
+        uses:  actions/checkout@v4
+
+      - name:  Configure AWS Credentials
+        uses:  aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: eu-west-2
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+      
+      - name: Health check
+        run: |
+          if curl --fail https://tm.yameen.click/health; then
+            echo "Health check passed - app is up"
+          else
+            echo "Health check failed - app is down"
+            exit 1
+          fi
