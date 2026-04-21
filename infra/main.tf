@@ -31,7 +31,7 @@ module "ecs" {
   fargate_cpu = 256
   fargate_memory = 512
   target_group_arn = module.alb.tg_arn
-  public_subnet_ids = [module.vpc.public_1_subnet, module.vpc.public_2_subnet]
+  private_subnet_ids = [module.vpc.private_1_subnet, module.vpc.private_2_subnet]
   vpc_id = module.vpc.vpc_id
   alb_sg_id = module.alb.alb_sg_id
 }
