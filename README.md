@@ -122,7 +122,24 @@ docker push <account_id>.dkr.ecr.eu-west-2.amazonaws.com/threatmod:latest
 
 ---
 
-### 3. Terraform
+### 3. Manual Deployment (ClickOps)
+
+Before writing any Terraform, the entire infrastructure was deployed manually via the AWS Console. This was done deliberately to understand how each service works and how they connect before automating it.
+
+The following were created manually:
+
+- ECR repository and initial image push
+- ECS Cluster, Task Definition and Fargate Service
+- Application Load Balancer, target group and listeners
+- Security groups for the ALB and ECS tasks
+- ACM certificate with DNS validation via Route 53
+- Route 53 A record pointing `tm.yameen.click` to the ALB
+
+Once the app was reachable at `https://tm.yameen.click`, everything was torn down and rebuilt using Terraform.
+
+---
+
+### 4. Terraform
 
 Infrastructure is fully defined as code using Terraform, organised into reusable modules.
 
@@ -161,7 +178,7 @@ terraform apply
 
 ---
 
-### 4. CI/CD Pipelines
+### 5. CI/CD Pipelines
 
 Two separate GitHub Actions workflows automate the build and deployment process.
 
