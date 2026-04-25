@@ -102,13 +102,33 @@ resource "aws_route_table" "private" {
     }
 }
 
+#Elastic IP 2
+resource "aws_eip" "lb2" {
+  domain = "vpc"
+}
+
+#NAT Gateway 2
+resource "aws_nat_gateway" "gw2" {
+  subnet_id     = aws_subnet.public_2.id
+  allocation_id = aws_eip.lb2.id
+}
+
+#Private Route Table 2
+resource "aws_route_table" "private2" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.gw2.id
+  }
+}
+
 #Private Route Table Association
 resource "aws_route_table_association" "private_1" {
-    subnet_id      = aws_subnet.private_1.id
-    route_table_id = aws_route_table.private.id
+  subnet_id      = aws_subnet.private_1.id
+  route_table_id = aws_route_table.private.id
 }
 
 resource "aws_route_table_association" "private_2" {
-    subnet_id      = aws_subnet.private_2.id
-    route_table_id = aws_route_table.private.id
+  subnet_id      = aws_subnet.private_2.id
+  route_table_id = aws_route_table.private2.id
 }

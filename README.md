@@ -1,4 +1,4 @@
-# ECS Project — Threat Composer on AWS
+# ECS Project - Threat Composer on AWS
 
 A containerised web application deployed to AWS using ECS Fargate, with full infrastructure-as-code via Terraform and automated CI/CD pipelines using GitHub Actions.
 
@@ -47,6 +47,11 @@ ECS-Project-YR/
         ├── build.yaml          # Docker build & push pipeline
         └── deploy.yaml         # Terraform deploy pipeline
 ```
+---
+
+## Architecture
+
+![Architecture of Project](./diagram.jpg)
 
 ---
 
